@@ -36,6 +36,7 @@ dependencies:
   dio: ^5.1.2               #For network call
   equatable: ^2.0.5         #For compare object
   flutter_bloc: ^8.1.2      #Cubit - Architecture package
+  sizer: ^2.0.15            #For responsive UI
 
 dev_dependencies:
   flutter_test:
