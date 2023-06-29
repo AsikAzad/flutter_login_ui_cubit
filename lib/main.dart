@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons_null_safety/flutter_icons_null_safety.dart';
 import 'package:flutter_login_ui_cubit/utils/color_palette.dart';
+import 'package:flutter_login_ui_cubit/utils/size_config.dart';
 import 'package:sizer/sizer.dart';
 
 void main() {
@@ -40,347 +41,426 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     //Initialize SizeConfig object
-    // SizeConfig().init(context);
+    SizeConfig().init(context);
 
     return Sizer(
       builder: (BuildContext context, Orientation orientation,
           DeviceType deviceType) {
         return Scaffold(
           backgroundColor: ColorPalette.backgroundColor,
-          body: Stack(
-            alignment: Alignment.center,
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 38.h,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("lib/assets/images/travel_bg.jpg"),
-                        fit: BoxFit.fill),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.only(top: 11.h, left: 10 * 1.5),
-                    color: ColorPalette.lightCyan.withOpacity(.75),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            text: "Welcome to",
-                            style: TextStyle(
-                              fontSize: 6.w,
-                              color: ColorPalette.yellowColor,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: " Travellers BD",
-                                style: TextStyle(
-                                  fontSize: 6.w,
-                                  fontWeight: FontWeight.bold,
-                                  color: ColorPalette.yellowColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 1.h),
-                        Text(
-                          isLoginScreen
-                              ? "Login to Continue"
-                              : "Sign up to Continue",
-                          style: const TextStyle(
-                            color: ColorPalette.whiteColor,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                      ],
+          body: orientation == Orientation.portrait
+              ? Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: buildHeaderImageContainer(orientation),
                     ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: isLoginScreen ? 27.h : 22.h,
-                child: Container(
-                  height: isLoginScreen ? 43.h : 63.1.h,
-                  width: 90.w,
-                  padding: EdgeInsets.all(4.w),
-                  decoration: BoxDecoration(
-                    color: ColorPalette.whiteColor,
-                    borderRadius: BorderRadius.circular(4.5.w),
-                    boxShadow: [
-                      BoxShadow(
-                        color: ColorPalette.shadowColor,
-                        blurRadius: 4.5.w,
-                        spreadRadius: 1.w,
+                    Positioned(
+                      top: isLoginScreen ? 30.h : 22.h,
+                      left: 0,
+                      right: 0,
+                      child: buildInputContainer(orientation),
+                    ),
+                  ],
+                )
+              : SingleChildScrollView(
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Container(
+                        child: buildHeaderImageContainer(orientation),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: isLoginScreen
+                                ? SizeConfig.screenHeight * .6
+                                : SizeConfig.screenHeight * .6,
+                            bottom: SizeConfig.defaultSize * 2),
+                        child: buildInputContainer(orientation),
                       ),
                     ],
                   ),
-                  child: Column(
-                    children: [
+                ),
+        );
+      },
+    );
+  }
+
+  Column buildInputContainer(Orientation orientation) {
+    return Column(
+      children: [
+        Container(
+          width: orientation == Orientation.portrait
+              ? 90.w
+              : SizeConfig.screenWidth * .8,
+          padding: EdgeInsets.all(orientation == Orientation.portrait
+              ? 4.w
+              : SizeConfig.defaultSize * 2),
+          decoration: BoxDecoration(
+            color: ColorPalette.whiteColor,
+            borderRadius: BorderRadius.circular(
+                orientation == Orientation.portrait
+                    ? 4.5.w
+                    : SizeConfig.defaultSize * 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: ColorPalette.shadowColor,
+                blurRadius: orientation == Orientation.portrait
+                    ? 4.5.w
+                    : SizeConfig.defaultSize * 1.5,
+                spreadRadius: orientation == Orientation.portrait
+                    ? 1.w
+                    : SizeConfig.defaultSize * .5,
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isLoginScreen = true;
+                      });
+                    },
+                    child: Column(
+                      children: [
+                        Text(
+                          "LOGIN",
+                          style: TextStyle(
+                            fontSize: orientation == Orientation.portrait
+                                ? 3.5.w
+                                : SizeConfig.defaultSize * 1.6,
+                            fontWeight: FontWeight.bold,
+                            color: isLoginScreen
+                                ? ColorPalette.activeColor
+                                : ColorPalette.textColor1,
+                          ),
+                        ),
+                        if (isLoginScreen)
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: SizeConfig.defaultSize * .3),
+                            height: SizeConfig.defaultSize * .2,
+                            width: SizeConfig.defaultSize * 6,
+                            color: ColorPalette.yellowColor,
+                          ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isLoginScreen = false;
+                      });
+                    },
+                    child: Column(
+                      children: [
+                        Text(
+                          "SIGNUP",
+                          style: TextStyle(
+                            fontSize: orientation == Orientation.portrait
+                                ? 3.5.w
+                                : SizeConfig.defaultSize * 1.6,
+                            fontWeight: FontWeight.bold,
+                            color: !isLoginScreen
+                                ? ColorPalette.activeColor
+                                : ColorPalette.textColor1,
+                          ),
+                        ),
+                        if (!isLoginScreen)
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: SizeConfig.defaultSize * .3),
+                            height: SizeConfig.defaultSize * .2,
+                            width: SizeConfig.defaultSize * 6,
+                            color: ColorPalette.yellowColor,
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                    top: orientation == Orientation.portrait
+                        ? 1.8.h
+                        : SizeConfig.defaultSize * 2),
+                child: Column(
+                  children: [
+                    if (!isLoginScreen)
+                      buildTextField(
+                        const Icon(Icons.person_2_outlined,
+                            color: ColorPalette.iconColor),
+                        "User Name",
+                        false,
+                        false,
+                      ),
+                    buildTextField(
+                      const Icon(Icons.email_outlined,
+                          color: ColorPalette.iconColor),
+                      "Email",
+                      true,
+                      false,
+                    ),
+                    buildTextField(
+                      const Icon(Icons.email_outlined,
+                          color: ColorPalette.iconColor),
+                      "Password",
+                      false,
+                      true,
+                    ),
+                    if (!isLoginScreen)
+                      buildTextField(
+                        const Icon(Icons.email_outlined,
+                            color: ColorPalette.iconColor),
+                        "Re-type Password",
+                        false,
+                        true,
+                      ),
+                    if (!isLoginScreen)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isLoginScreen = true;
-                              });
-                            },
-                            child: Column(
-                              children: [
-                                Text(
-                                  "LOGIN",
-                                  style: TextStyle(
-                                    fontSize: 3.5.w,
-                                    fontWeight: FontWeight.bold,
-                                    color: isLoginScreen
-                                        ? ColorPalette.activeColor
-                                        : ColorPalette.textColor1,
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isMale = true;
+                                  });
+                                },
+                                child: Container(
+                                  height: SizeConfig.defaultSize * 3,
+                                  width: SizeConfig.defaultSize * 3,
+                                  margin: EdgeInsets.only(
+                                      right: SizeConfig.defaultSize),
+                                  decoration: BoxDecoration(
+                                    color: isMale
+                                        ? ColorPalette.textColor2
+                                        : Colors.transparent,
+                                    border: Border.all(
+                                        width: SizeConfig.defaultSize * .1,
+                                        color: isMale
+                                            ? ColorPalette.textColor2
+                                            : ColorPalette.textColor1),
+                                    borderRadius: BorderRadius.circular(
+                                        SizeConfig.defaultSize * 1.5),
+                                  ),
+                                  child: Icon(
+                                    Icons.male_outlined,
+                                    color: isMale
+                                        ? Colors.white
+                                        : ColorPalette.iconColor,
                                   ),
                                 ),
-                                if (isLoginScreen)
-                                  Container(
-                                    margin: EdgeInsets.only(top: 10 * .3),
-                                    height: 10 * .2,
-                                    width: 10 * 6,
-                                    color: ColorPalette.yellowColor,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isMale = true;
+                                  });
+                                },
+                                child: const Text(
+                                  "Male",
+                                  style:
+                                      TextStyle(color: ColorPalette.textColor1),
+                                ),
+                              ),
+                              SizedBox(
+                                width: orientation == Orientation.portrait
+                                    ? 6.w
+                                    : SizeConfig.defaultSize * 3,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isMale = false;
+                                  });
+                                },
+                                child: Container(
+                                  height: SizeConfig.defaultSize * 3,
+                                  width: SizeConfig.defaultSize * 3,
+                                  margin: EdgeInsets.only(
+                                      right: orientation == Orientation.portrait
+                                          ? 3.5.w
+                                          : SizeConfig.defaultSize),
+                                  decoration: BoxDecoration(
+                                    color: !isMale
+                                        ? ColorPalette.textColor2
+                                        : Colors.transparent,
+                                    border: Border.all(
+                                      width: SizeConfig.defaultSize * .1,
+                                      color: !isMale
+                                          ? ColorPalette.textColor2
+                                          : ColorPalette.textColor1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                        SizeConfig.defaultSize * 1.5),
                                   ),
-                              ],
-                            ),
+                                  child: Icon(
+                                    Icons.female_outlined,
+                                    color: !isMale
+                                        ? Colors.white
+                                        : ColorPalette.iconColor,
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isMale = false;
+                                  });
+                                },
+                                child: const Text(
+                                  "Female",
+                                  style:
+                                      TextStyle(color: ColorPalette.textColor1),
+                                ),
+                              )
+                            ],
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isLoginScreen = false;
-                              });
-                            },
-                            child: Column(
-                              children: [
-                                Text(
-                                  "SIGNUP",
-                                  style: TextStyle(
-                                    fontSize: 3.5.w,
-                                    fontWeight: FontWeight.bold,
-                                    color: !isLoginScreen
-                                        ? ColorPalette.activeColor
-                                        : ColorPalette.textColor1,
-                                  ),
-                                ),
-                                if (!isLoginScreen)
-                                  Container(
-                                    margin: EdgeInsets.only(top: 10 * .3),
-                                    height: 10 * .2,
-                                    width: 10 * 6,
-                                    color: ColorPalette.yellowColor,
-                                  ),
-                              ],
-                            ),
-                          )
                         ],
                       ),
-                      Container(
-                        margin: EdgeInsets.only(top: 1.8.h),
-                        child: Column(
-                          children: [
-                            if (!isLoginScreen)
-                              buildTextField(
-                                const Icon(Icons.person_2_outlined,
-                                    color: ColorPalette.iconColor),
-                                "User Name",
-                                false,
-                                false,
-                              ),
-                            buildTextField(
-                              const Icon(Icons.email_outlined,
-                                  color: ColorPalette.iconColor),
-                              "Email",
-                              true,
-                              false,
-                            ),
-                            buildTextField(
-                              const Icon(Icons.email_outlined,
-                                  color: ColorPalette.iconColor),
-                              "Password",
-                              false,
-                              true,
-                            ),
-                            if (!isLoginScreen)
-                              buildTextField(
-                                const Icon(Icons.email_outlined,
-                                    color: ColorPalette.iconColor),
-                                "Re-type Password",
-                                false,
-                                true,
-                              ),
-                            if (!isLoginScreen)
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            isMale = true;
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 10 * 3,
-                                          width: 10 * 3,
-                                          margin: EdgeInsets.only(right: 3.w),
-                                          decoration: BoxDecoration(
-                                            color: isMale
-                                                ? ColorPalette.textColor2
-                                                : Colors.transparent,
-                                            border: Border.all(
-                                                width: 10 * .1,
-                                                color: isMale
-                                                    ? ColorPalette.textColor2
-                                                    : ColorPalette.textColor1),
-                                            borderRadius:
-                                                BorderRadius.circular(10 * 1.5),
-                                          ),
-                                          child: Icon(
-                                            Icons.male_outlined,
-                                            color: isMale
-                                                ? Colors.white
-                                                : ColorPalette.iconColor,
-                                          ),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            isMale = true;
-                                          });
-                                        },
-                                        child: const Text(
-                                          "Male",
-                                          style: TextStyle(
-                                              color: ColorPalette.textColor1),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 6.w,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            isMale = false;
-                                          });
-                                        },
-                                        child: Container(
-                                          height: 10 * 3,
-                                          width: 10 * 3,
-                                          margin: EdgeInsets.only(right: 3.5.w),
-                                          decoration: BoxDecoration(
-                                            color: !isMale
-                                                ? ColorPalette.textColor2
-                                                : Colors.transparent,
-                                            border: Border.all(
-                                              width: 10 * .1,
-                                              color: !isMale
-                                                  ? ColorPalette.textColor2
-                                                  : ColorPalette.textColor1,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(10 * 1.5),
-                                          ),
-                                          child: Icon(
-                                            Icons.female_outlined,
-                                            color: !isMale
-                                                ? Colors.white
-                                                : ColorPalette.iconColor,
-                                          ),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            isMale = false;
-                                          });
-                                        },
-                                        child: const Text(
-                                          "Female",
-                                          style: TextStyle(
-                                              color: ColorPalette.textColor1),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            Container(
-                              width: 60.w,
-                              margin: EdgeInsets.only(top: 1.5.h),
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: const TextSpan(
-                                  text:
-                                      "By clicking 'Submit' you agree \nto our ",
-                                  style:
-                                      TextStyle(color: ColorPalette.textColor2),
-                                  children: [
-                                    TextSpan(
-                                      // recognizer: ,
-                                      text: "terms & conditions",
-                                      style: TextStyle(
-                                          color: ColorPalette.yellowColor),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 1.5.h),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: ColorPalette.lightCyan),
-                              child: const Text("SUBMIT"),
+                    Container(
+                      width: orientation == Orientation.portrait
+                          ? 60.w
+                          : SizeConfig.defaultSize * 40,
+                      margin: EdgeInsets.only(
+                          top: orientation == Orientation.portrait
+                              ? 1.5.h
+                              : SizeConfig.defaultSize * 2),
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          text: orientation == Orientation.portrait
+                              ? "By clicking 'Submit' you agree \nto our "
+                              : "By clicking 'Submit' you agree to our ",
+                          style:
+                              const TextStyle(color: ColorPalette.textColor2),
+                          children: const [
+                            TextSpan(
+                              // recognizer: ,
+                              text: "terms & conditions",
+                              style: TextStyle(color: ColorPalette.yellowColor),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                        height: orientation == Orientation.portrait
+                            ? 1.5.h
+                            : SizeConfig.defaultSize * 2),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorPalette.lightCyan),
+                      child: const Text("SUBMIT"),
+                    ),
+                  ],
                 ),
               ),
-              if (!isLoginScreen)
-                Positioned(
-                  top: 88.h,
-                  left: 0,
-                  right: 0,
-                  child: Column(
-                    children: [
-                      const Text(
-                        "or Signup with",
-                        style: TextStyle(
-                          color: ColorPalette.lightCyan,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                      SizedBox(height: 1.5.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          buildSignUpButton(MaterialCommunityIcons.facebook,
-                              ColorPalette.facebookColor, "Facebook"),
-                          buildSignUpButton(MaterialCommunityIcons.google_plus,
-                              ColorPalette.googleColor, "Google"),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
             ],
           ),
-        );
-      },
+        ),
+        if (!isLoginScreen)
+          Column(
+            children: [
+              SizedBox(
+                  height: orientation == Orientation.portrait
+                      ? 2.5.h
+                      : SizeConfig.defaultSize * 3),
+              const Text(
+                "or Signup with",
+                style: TextStyle(
+                  color: ColorPalette.lightCyan,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
+              ),
+              SizedBox(
+                  height: orientation == Orientation.portrait
+                      ? 1.5.h
+                      : SizeConfig.defaultSize * 2),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  buildSignUpButton(MaterialCommunityIcons.facebook,
+                      ColorPalette.facebookColor, "Facebook"),
+                  buildSignUpButton(MaterialCommunityIcons.google_plus,
+                      ColorPalette.googleColor, "Google"),
+                ],
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  Container buildHeaderImageContainer(Orientation orientation) {
+    return Container(
+      height: orientation == Orientation.portrait
+          ? 38.h
+          : SizeConfig.defaultSize * 42,
+      width: SizeConfig.screenWidth,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage("lib/assets/images/travel_bg.jpg"),
+            fit: BoxFit.fill),
+      ),
+      child: Container(
+        padding: orientation == Orientation.portrait
+            ? EdgeInsets.only(top: 11.h, left: 4.w)
+            : EdgeInsets.only(
+                top: SizeConfig.defaultSize * 12,
+                left: SizeConfig.defaultSize * SizeConfig.defaultSize),
+        color: ColorPalette.lightCyan.withOpacity(.75),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RichText(
+              text: TextSpan(
+                text: "Welcome to",
+                style: TextStyle(
+                  fontSize: orientation == Orientation.portrait
+                      ? 6.w
+                      : SizeConfig.defaultSize * 2.5,
+                  color: ColorPalette.yellowColor,
+                ),
+                children: [
+                  TextSpan(
+                    text: " Travellers BD",
+                    style: TextStyle(
+                      fontSize: orientation == Orientation.portrait
+                          ? 6.w
+                          : SizeConfig.defaultSize * 2.5,
+                      fontWeight: FontWeight.bold,
+                      color: ColorPalette.yellowColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+                height: orientation == Orientation.portrait
+                    ? 1.h
+                    : SizeConfig.defaultSize),
+            Text(
+              isLoginScreen ? "Login to Continue" : "Sign up to Continue",
+              style: const TextStyle(
+                color: ColorPalette.whiteColor,
+                letterSpacing: 1,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -388,7 +468,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return TextButton(
       onPressed: () {},
       style: TextButton.styleFrom(
-        minimumSize: Size(10 * 13, 10 * 4),
+        minimumSize:
+            Size(SizeConfig.defaultSize * 13, SizeConfig.defaultSize * 4),
         backgroundColor: ColorPalette.whiteColor,
         side: const BorderSide(width: 1, color: ColorPalette.iconColor),
       ),
@@ -398,7 +479,7 @@ class _LoginScreenState extends State<LoginScreen> {
             icon,
             color: iconColor,
           ),
-          SizedBox(width: 10 * .5),
+          SizedBox(width: SizeConfig.defaultSize * .5),
           Text(
             text,
             style: TextStyle(color: iconColor, letterSpacing: 2),
@@ -419,11 +500,13 @@ class _LoginScreenState extends State<LoginScreen> {
             prefixIcon: icon,
             enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: ColorPalette.textColor1),
-              borderRadius: BorderRadius.all(Radius.circular(10 * 3.5)),
+              borderRadius: BorderRadius.all(
+                  Radius.circular(SizeConfig.defaultSize * 3.5)),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: ColorPalette.textColor1),
-              borderRadius: BorderRadius.all(Radius.circular(10 * 3.5)),
+              borderRadius: BorderRadius.all(
+                  Radius.circular(SizeConfig.defaultSize * 3.5)),
             ),
             contentPadding: EdgeInsets.all(2.w),
             hintText: hintText,
