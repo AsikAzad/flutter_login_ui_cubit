@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icons_null_safety/flutter_icons_null_safety.dart';
 import 'package:flutter_login_ui_cubit/utils/color_palette.dart';
 import 'package:flutter_login_ui_cubit/utils/size_config.dart';
@@ -46,44 +47,49 @@ class _LoginScreenState extends State<LoginScreen> {
     return Sizer(
       builder: (BuildContext context, Orientation orientation,
           DeviceType deviceType) {
-        return Scaffold(
-          backgroundColor: ColorPalette.backgroundColor,
-          body: orientation == Orientation.portrait
-              ? Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: buildHeaderImageContainer(orientation),
-                    ),
-                    Positioned(
-                      top: isLoginScreen ? 30.h : 22.h,
-                      left: 0,
-                      right: 0,
-                      child: buildInputContainer(orientation),
-                    ),
-                  ],
-                )
-              : SingleChildScrollView(
-                  child: Stack(
-                    alignment: Alignment.topCenter,
+        return GestureDetector(
+          onTap: () {
+            SystemChannels.textInput.invokeMethod('TextInput.hide');
+          },
+          child: Scaffold(
+            backgroundColor: ColorPalette.backgroundColor,
+            body: orientation == Orientation.portrait
+                ? Stack(
+                    alignment: Alignment.center,
                     children: [
-                      Container(
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
                         child: buildHeaderImageContainer(orientation),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: isLoginScreen
-                                ? SizeConfig.screenHeight * .6
-                                : SizeConfig.screenHeight * .6,
-                            bottom: SizeConfig.defaultSize * 2),
+                      Positioned(
+                        top: isLoginScreen ? 30.h : 22.h,
+                        left: 0,
+                        right: 0,
                         child: buildInputContainer(orientation),
                       ),
                     ],
+                  )
+                : SingleChildScrollView(
+                    child: Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Container(
+                          child: buildHeaderImageContainer(orientation),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                              top: isLoginScreen
+                                  ? SizeConfig.screenHeight * .6
+                                  : SizeConfig.screenHeight * .6,
+                              bottom: SizeConfig.defaultSize * 2),
+                          child: buildInputContainer(orientation),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+          ),
         );
       },
     );
